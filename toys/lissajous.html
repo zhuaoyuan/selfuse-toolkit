@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        canvas{
+            border: 1px solid white;
+        }
+    </style>
+    <title>Lissajous</title>
+</head>
+<body>
+<canvas></canvas>
+<script type="text/javascript">
+    var r = 300;
+    var delta = 0.3;
+    var theta1 = Math.PI/48;
+    var theta2 = Math.PI/7;
+
+    var initx = 2 * r;
+    var inity = 1 * r;
+
+    var canvas = document.querySelector('canvas');
+    canvas.width = 2*r;
+    canvas.height = 2*r;
+
+    var c = canvas.getContext('2d');
+
+    c.moveTo(initx, inity);
+
+    var t = 0;
+
+    window.setInterval(function () {
+        t++;
+        tick(c, t);
+    },10);
+
+    function tick(c, t){
+        var x = (1+Math.cos(theta1*delta*t))*r;
+        var y = (1+Math.sin(theta2*delta*t))*r;
+        c.lineTo(x, y);
+        console.log("x:"+x+",y:"+y)
+        c.stroke();
+    }
+</script>
+</body>
+</html>

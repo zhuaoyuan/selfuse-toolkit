@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        canvas{
+            border: 1px solid black;
+        }
+    </style>
+    <title>CGOL</title>
+</head>
+<body>
+<canvas></canvas>
+<script type="text/javascript">
+    var canvas = document.querySelector('canvas');
+    var c = canvas.getContext('2d');
+
+    var w = 30;
+    var h = 15;
+
+    var statusMatrix = newMatrix(w, h, true);
+
+    var i = 0;
+
+    window.setInterval(function () {
+        statusMatrix = transform(statusMatrix, w, h);
+        draw(c, statusMatrix, w, h);
+    },500);
+
+    function newMatrix(w, h, init) {
+        var matrix = [];
+        for(var i=0; i<h; i++){
+            matrix[i] = [];
+            for(var j=0; j<w; j++){
+                if(init){
+                    matrix[i][j] = Math.random()>0.8?1:0;
+                } else {
+                    matrix[i][j] = 0;
+                }
+            }
+        }
+
+        return matrix;
+    }
+
+    function transform(matrix, w, h) {
+        var nMatrix = newMatrix(w, h, false);
+
+        for(var i=0; i<h; i++){
+            for(var j=0; j< w; j++){
+                if(isLive(matrix, i, j)){
+                    nMatrix[i][j] = 1;
+                } else {
+                    nMatrix[i][j] = 0;
+                }
+            }
+        }
+        return nMatrix;
+    }
+
+    function isLive(matrix, i, j) {
+        var nCount = neighborCount(matrix, i, j);
+        if(matrix[i][j] === 1){
+            return (nCount<4 && nCount>1);
+        } else {
+            return (nCount === 3);
+        }
+    }
+
+    function neighborCount(matrix, i, j){
+        var liveNeighbors = 0;
+        for(var k=-1; k<2; k++){
+            for(var l=-1; l<2; l++){
+                if(k!==0 || l!==0){
+                    if(matrix[i+k]!=undefined && matrix[i+k][j+l] === 1){
+                        liveNeighbors++;
+                    }
+                }
+            }
+        }
+        return liveNeighbors;
+    }
+
+    function draw(c, statusMatrix, w, h){
+        c.clearRect(0, 0, w*10, h*10);
+        for(var i=0; i<h; i++) {
+            for (var j = 0; j<w; j++) {
+                if(statusMatrix[i][j]){
+                    c.fillRect(j*10, i*10, 10, 10);
+                } else {
+                    c.rect(j*10, i*10, 10, 10);
+                }
+            }
+        }
+        c.stroke();
+    }
+</script>
+</body>
+</html>
